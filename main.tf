@@ -105,6 +105,7 @@ resource "aws_s3_bucket_notification" "s3_lambda_trigger" {
   }
 }
 
+# Grant S3 Permission to Invoke Lambda
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowExecutionFromS3"
   action        = "lambda:InvokeFunction"
