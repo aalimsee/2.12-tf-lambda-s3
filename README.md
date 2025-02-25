@@ -10,6 +10,14 @@ Terraform script to deploy an AWS Lambda function that triggers when a file is c
 
 You'll need to replace placeholders like <YOUR_BUCKET_NAME> and provide a Lambda deployment package (.zip file).
 
+# Overall Flow
+- A user uploads a file to the S3 bucket.
+- S3 triggers the Lambda function.
+The Lambda function:
+- Extracts the bucket name and file name from the event.
+- Sends a notification to the SNS topic.
+- The SNS topic sends an email notification to the subscribed email.
+
 # Lambda_function.zip
 lambda_function.zip is the deployment package for your AWS Lambda function. It contains your function code and any dependencies it needs.
 
