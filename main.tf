@@ -2,7 +2,7 @@
 locals {
     YOUR_BUCKET_NAME = "aalimsee-lambda"
     //YOUR_EMAIL_ADDRESS = "your_email@example.com"
-    //YOUR_PHONE_NUMBER = "+6598439843"
+    //YOUR_PHONE_NUMBER = "+6598"
 }
 
 # Define the Email & SMS List as Variables
