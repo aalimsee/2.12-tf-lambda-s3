@@ -7,6 +7,9 @@ Terraform script to deploy an AWS Lambda function that triggers when a file is c
 - A Lambda function to process file uploads
 - An IAM role and policy for Lambda to access S3
 - An S3 event notification to trigger Lambda
+- Lambda sends notifications to email and SMS via SNS
+- Phone number must be verified in SNS sandbox for SMS to work
+- Set SMS type to "Transactional" for reliable delivery
 
 You'll need to replace placeholders like <YOUR_BUCKET_NAME> and provide a Lambda deployment package (.zip file).
 
@@ -88,3 +91,20 @@ From this event:
 {bucket_name} would be "my-s3-bucket"
 {object_key} would be "uploads/myfile.txt"
 Your Lambda function extracts these values to process the event and send notifications.
+
+# Troubleshoot SMS Issues
+If your SNS SMS notifications are not being received, here’s how you can troubleshoot the issue:
+
+1. Check SNS SMS Delivery Status
+AWS SNS logs SMS deliveries and failures. Run the following AWS CLI command to check SMS delivery logs:
+
+    aws sns get-sms-attributes
+
+Look for attributes like:
+
+delivery_status_success_rate
+delivery_status_failure_rate
+If delivery_status_failure_rate is high, there might be an issue with AWS or the carrier.
+
+# Upload file to s3 bucket (aalimsee-lambda)
+aws s3 cp ~/ce9-exercises/2.10-static-website-example/staging.html s3://aalimsee-lambda 

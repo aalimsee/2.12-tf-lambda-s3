@@ -1,13 +1,41 @@
 
 locals {
     YOUR_BUCKET_NAME = "aalimsee-lambda"
-    YOUR_EMAIL_ADDRESS = "aaron.limse@hotmail.com"
-    YOUR_PHONE_NUMBER = "+6593803092"
+    //YOUR_EMAIL_ADDRESS = "your_email@example.com"
+    //YOUR_PHONE_NUMBER = "+6598439843"
 }
+
+# Define the Email & SMS List as Variables
+variable "email_addresses" {
+  type    = list(string)
+  //default = ["email1@example.com", "email2@example.com"]
+}
+
+variable "phone_numbers" {
+  type    = list(string)
+  //default = ["+6591234567", "+6598765432"]
+}
+
+# Subscribe Multiple Emails & Phone Numbers to SNS
+/* resource "aws_sns_topic_subscription" "email_subscriptions" {
+  count     = length(var.email_addresses)
+  topic_arn = aws_sns_topic.lambda_notifications.arn
+  protocol  = "email"
+  endpoint  = var.email_addresses[count.index]
+}
+
+resource "aws_sns_topic_subscription" "sms_subscriptions" {
+  count     = length(var.phone_numbers)
+  topic_arn = aws_sns_topic.lambda_notifications.arn
+  protocol  = "sms"
+  endpoint  = var.phone_numbers[count.index]
+}
+ */
 
 # Create an S3 Bucket
 resource "aws_s3_bucket" "lambda_trigger_bucket" {
   bucket = local.YOUR_BUCKET_NAME
+  force_destroy = true
 }
 
 # Set Up SNS for Notifications
@@ -17,17 +45,20 @@ resource "aws_sns_topic" "lambda_notifications" {
 
 # Add SNS Topic Subscription for EMAIL
 resource "aws_sns_topic_subscription" "email_subscription" {
+  count = length(var.email_addresses)
   topic_arn = aws_sns_topic.lambda_notifications.arn
   protocol  = "email"
-  endpoint  = local.YOUR_EMAIL_ADDRESS # Change to your email
+  //endpoint  = local.YOUR_EMAIL_ADDRESS # Change to your email
+  endpoint = var.email_addresses[count.index]
 }
 
 # Add SNS Topic Subscription for SMS (Text Messaging)
 resource "aws_sns_topic_subscription" "sms_subscription" {
+  count = length(var.phone_numbers)
   topic_arn = aws_sns_topic.lambda_notifications.arn
-  
   protocol  = "sms"
-  endpoint  = local.YOUR_PHONE_NUMBER # Replace with actual phone number in E.164 format (+1234567890)
+  //endpoint  = local.YOUR_PHONE_NUMBER # Replace with actual phone number in E.164 format (+1234567890)
+  endpoint = var.phone_numbers[count.index]
 }
 
 resource "aws_sns_sms_preferences" "sms_config" {
@@ -36,10 +67,18 @@ resource "aws_sns_sms_preferences" "sms_config" {
 }
 
 # SNS sandbox registration resource for us-east-1
-resource "null_resource" "register_sandbox_phone" {
+/* resource "null_resource" "register_sandbox_phone" {
   provisioner "local-exec" {
     command = <<EOT
       aws sns create-sms-sandbox-phone-number --phone-number ${local.YOUR_PHONE_NUMBER} --language-code en-US
+    EOT
+  }
+} */
+resource "null_resource" "register_sandbox_phone" {
+  count = length(var.phone_numbers)
+  provisioner "local-exec" {
+    command = <<EOT
+      aws sns create-sms-sandbox-phone-number --phone-number ${var.phone_numbers[count.index]} --language-code en-US
     EOT
   }
 }
