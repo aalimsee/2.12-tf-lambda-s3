@@ -144,6 +144,12 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
   policy_arn = aws_iam_policy.lambda_s3_policy.arn
 }
 
+# CloudWatch Log Group for Lambda
+resource "aws_cloudwatch_log_group" "lambda_logs" {
+  name              = "/aws/lambda/${aws_lambda_function.s3_trigger_lambda.function_name}"
+  retention_in_days = 7  # Change as needed
+}
+
 # Create the Lambda Function. Deploys the Lambda function from lambda_function.zip. Sets an environment variable SNS_TOPIC_ARN to send SNS notifications.
 resource "aws_lambda_function" "s3_trigger_lambda" {
   filename      = "lambda_function.zip" # Ensure this file is present
@@ -154,6 +160,7 @@ resource "aws_lambda_function" "s3_trigger_lambda" {
   environment {
     variables = {
       SNS_TOPIC_ARN = aws_sns_topic.lambda_notifications.arn
+      DYNAMODB_TABLE  = aws_dynamodb_table.s3_uploaded_files.name
     }
   }
 }

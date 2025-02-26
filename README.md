@@ -107,4 +107,4 @@ delivery_status_failure_rate
 If delivery_status_failure_rate is high, there might be an issue with AWS or the carrier.
 
 # Upload file to s3 bucket (aalimsee-lambda)
-aws s3 cp ~/ce9-exercises/2.10-static-website-example/staging.html s3://aalimsee-lambda 
+aws s3 cp ~/ce9-exercises/2.10-static-website-example/staging.html s3://aalimsee-lambda

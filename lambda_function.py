@@ -2,7 +2,7 @@ import json
 import boto3
 import os
 
-sns_client = boto3.client('sns')
+sns_client = boto3.client('sns') # <<<
 
 def lambda_handler(event, context):
     print("Event: ", json.dumps(event))
@@ -22,3 +22,4 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('Notification Sent!')
     }
+
