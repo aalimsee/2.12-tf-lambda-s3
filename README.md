@@ -108,3 +108,20 @@ If delivery_status_failure_rate is high, there might be an issue with AWS or the
 
 # Upload file to s3 bucket (aalimsee-lambda)
 aws s3 cp ~/ce9-exercises/2.10-static-website-example/staging.html s3://aalimsee-lambda
+
+# Upload file to s3 bucket (with Test Button)
+Create a test in Test Tab and use the following JSON code to trigger test upload
+{
+  "Records": [
+    {
+      "s3": {
+        "bucket": {
+          "name": "s3://aalimsee-lambda/"
+        },
+        "object": {
+          "key": "test-wo-s3Upload.txt"
+        }
+      }
+    }
+  ]
+}
